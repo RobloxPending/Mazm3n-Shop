@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAZM3N'S SHOP</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0b0b0b;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      animation: fadeIn 1s ease;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #111, #1b1b1b);
+      border-bottom: 2px solid #1f1f1f;
+      letter-spacing: 1px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: #121212;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
+      animation: slideUp 1s ease;
+    }
+
+    h2 {
+      border-left: 5px solid #00ff9d;
+      padding-left: 10px;
+      margin-top: 2rem;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+      background: #1a1a1a;
+      color: #fff;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-box:focus {
+      background: #222;
+      box-shadow: 0 0 10px #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 1rem;
+    }
+
+    th {
+      background: #1c1c1c;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    tr {
+      transition: background 0.3s ease, transform 0.2s ease;
+      cursor: pointer;
+    }
+
+    tr:nth-child(even) { background: #151515; }
+
+    tr:hover {
+      background: #222;
+      transform: scale(1.01);
+    }
+
+    .coming-soon {
+      text-align: center;
+      color: #888;
+      font-style: italic;
+      margin-top: 0.5rem;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .modal-content {
+      background: #1b1b1b;
+      padding: 2rem;
+      border-radius: 15px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      animation: scaleUp 0.3s ease;
+    }
+
+    .modal h2 { margin: 0 0 1rem 0; }
+    .modal p { color: #bbb; margin-bottom: 1.5rem; }
+
+    .close-btn {
+      background: #00ff9d;
+      color: #000;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .close-btn:hover { background: #00d482; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  </style>
+</head>
+<body>
+  <header>WELCOME TO MAZM3N'S SHOP!</header>
+  <div class="container">
+    <input type="text" id="searchInput" class="search-box" placeholder="Search Items..." onkeyup="searchAll()" />
+
+    <h2>🧠 Brainrot Category</h2>
+    <table id="brainrotTable">
+      <thead>
+        <tr>
+          <th>Brainrot</th>
+          <th>Per Second</th>
+          <th>Price (£)</th>
+        </tr>
+      </thead>
+      <tbody id="brainrotBody"></tbody>
+    </table>
+
+    <h2>💰 Robux Category</h2>
+    <table id="robuxTable">
+      <thead>
+        <tr>
+          <th>Amount</th>
+          <th>Price (£)</th>
+        </tr>
+      </thead>
+      <tbody id="robuxBody"></tbody>
+    </table>
+    <div class="coming-soon">More coming soon...</div>
+  </div>
+
+  <!-- Modal -->
+  <div id="infoModal" class="modal">
+    <div class="modal-content">
+      <h2 id="modalName"></h2>
+      <p id="modalInfo"></p>
+      <p><strong>💸 Cash only</strong></p>
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const brainrots = [
+      { name: "La Grande", perSecond: "12M", price: 3.5 },
+      { name: "La Grande", perSecond: "62M", price: 7 },
+      { name: "La Grande", perSecond: "120M", price: 20 },
+      { name: "Los Bros", perSecond: "24M", price: 13.5 },
+      { name: "Los Tralalitos", perSecond: "11M", price: 3 },
+      { name: "Los Combo", perSecond: "15M", price: 8.5 }
+    ];
+
+    const robux = [
+      { name: "220 Robux", price: 3.5 },
+      { name: "500 Robux", price: 6.5 }
+    ];
+
+    brainrots.sort((a, b) => a.name.localeCompare(b.name));
+    robux.sort((a, b) => a.name.localeCompare(b.name));
+
+    const brainrotBody = document.getElementById('brainrotBody');
+    const robuxBody = document.getElementById('robuxBody');
+
+    brainrots.forEach(item => {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${item.name}</td><td>${item.perSecond}</td><td>£${item.price}</td>`;
+      row.addEventListener('click', () => openModal(item.name, `${item.name} generates ${item.perSecond} per second. Price: £${item.price}.`));
+      brainrotBody.appendChild(row);
+    });
+
+    robux.forEach(item => {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${item.name}</td><td>£${item.price}</td>`;
+      row.addEventListener('click', () => openModal(item.name, `${item.name} available for £${item.price}.`));
+      robuxBody.appendChild(row);
+    });
+
+    function searchAll() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      document.querySelectorAll("tbody tr").forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(input) ? "" : "none";
+      });
+    }
+
+    function openModal(title, info) {
+      document.getElementById("modalName").textContent = title;
+      document.getElementById("modalInfo").textContent = info;
+      document.getElementById("infoModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("infoModal").style.display = "none";
+    }
+
+    window.onclick = function(e) {
+      const modal = document.getElementById("infoModal");
+      if (e.target === modal) closeModal();
+    };
+  </script>
+</body>
+</html>
